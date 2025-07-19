@@ -1,4 +1,4 @@
-Título: rae
-Descripción: te podre conquistar?
+Título: min heap
+Descripción: terminar de implementar
 
 ------------------------------------------
