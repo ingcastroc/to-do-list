@@ -5,7 +5,10 @@
 package listahacer;
 
 import java.awt.Color;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.*;
@@ -22,10 +25,7 @@ public class agregarTarea extends javax.swing.JFrame {
         Descripcion.setWrapStyleWord(true);
         this.ventanaPrincipal = ventanaPrincipal;
         this.setLocation(200, 100);
-        labelVerde.setOpaque(true);
-        labelRojo.setOpaque(true);
-        labelRojo.setBackground(new Color(165,32,25));
-        labelVerde.setBackground(new Color(0,140,0)); 
+        
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
@@ -35,7 +35,7 @@ public class agregarTarea extends javax.swing.JFrame {
         jDateChooser1.setMinSelectableDate(c.getTime());  
         jDateChooser1.getDateEditor().setEnabled(false);  
         AbstractDocument doc = (AbstractDocument) Descripcion.getDocument();
-        doc.setDocumentFilter(new LimiteCaracteres(100));
+        doc.setDocumentFilter(new LimiteCaracteres(300));
     }
     public class LimiteCaracteres extends DocumentFilter {
     private int limite;
@@ -78,11 +78,6 @@ public class agregarTarea extends javax.swing.JFrame {
         Descripcion = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        eleccionVerde = new javax.swing.JRadioButton();
-        jLabel4 = new javax.swing.JLabel();
-        eleccionRoja = new javax.swing.JRadioButton();
-        labelVerde = new javax.swing.JLabel();
-        labelRojo = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -103,25 +98,6 @@ public class agregarTarea extends javax.swing.JFrame {
         jScrollPane1.setViewportView(Descripcion);
 
         jLabel3.setText("fecha ");
-
-        Grupo1.add(eleccionVerde);
-        eleccionVerde.setText("baja");
-
-        jLabel4.setText("importancia:");
-
-        Grupo1.add(eleccionRoja);
-        eleccionRoja.setText("Alta");
-        eleccionRoja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                eleccionRojaActionPerformed(evt);
-            }
-        });
-
-        labelVerde.setBackground(new java.awt.Color(0, 200, 0));
-        labelVerde.setForeground(new java.awt.Color(0, 200, 0));
-        labelVerde.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.green, new java.awt.Color(0, 153, 0), java.awt.Color.green, java.awt.Color.green));
-
-        labelRojo.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jButton1.setText("Guardar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -154,24 +130,9 @@ public class agregarTarea extends javax.swing.JFrame {
                             .addComponent(Tarea)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(14, 14, 14)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(eleccionVerde)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(labelVerde, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(4, 4, 4)
-                                        .addComponent(eleccionRoja)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(labelRojo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -182,16 +143,7 @@ public class agregarTarea extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labelVerde, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(eleccionVerde))
-                        .addGap(33, 33, 33)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labelRojo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(eleccionRoja)))
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -200,13 +152,12 @@ public class agregarTarea extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))))
-                .addGap(21, 21, 21)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         pack();
@@ -216,42 +167,28 @@ public class agregarTarea extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TareaActionPerformed
 
-    private void eleccionRojaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eleccionRojaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_eleccionRojaActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        String tarea = Tarea.getText();
-        String descripcion = Descripcion.getText();
-        int seleccion;
-        if(eleccionVerde.isSelected()){
-            seleccion=0;
-        }else if(eleccionRoja.isSelected()){
-            seleccion=1;
-        }else{
-            seleccion=2;
-        }
-        if(tarea== null||tarea.trim().isEmpty()){
-            JOptionPane.showMessageDialog(rootPane,"no has colocado una tarea ");
-        }else{
-            if(seleccion == 0||seleccion == 2){
-                ventanaPrincipal.lista.agregarTarea(tarea, descripcion, seleccion);
-                ventanaPrincipal.actualizarList();
-                Tarea.setText("");
-                Descripcion.setText("");
-                Grupo1.clearSelection();
-            }else{
-                ventanaPrincipal.lista.agregarTareaAlInicio(tarea, descripcion,seleccion);
-                ventanaPrincipal.actualizarList();
-                ventanaPrincipal.actualizarList();
-                Tarea.setText("");
-                Descripcion.setText("");
-                Grupo1.clearSelection();
-            }
-        
-        }
-     
+        PersistenciaHeap obj = new PersistenciaHeap();
+        Date fechaSeleccionada = jDateChooser1.getDate();
+        LocalDate hoy = LocalDate.now();
+        LocalDate seleccion = fechaSeleccionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (fechaSeleccionada == null || seleccion.isEqual(hoy)) {
+            // Se asume que es hoy
+            ventanaPrincipal.lista.agregarTarea(Tarea.getText(), Descripcion.getText());
+            ventanaPrincipal.actualizarList();
+            persistenciaDatos.crearArchivoTarea(Tarea.getText(), Descripcion.getText());
+            Tarea.setText("");
+            Descripcion.setText("");
+
+        } else if(seleccion.isAfter(hoy)) {
+            TareaConFecha tarea = new TareaConFecha(Tarea.getText(),Descripcion.getText(),seleccion);
+            
+            ventanaPrincipal.arbol.insertar(tarea);
+            PersistenciaHeap.guardarTareaIndividual(tarea);
+            ventanaPrincipal.arbol.imprimirHeap();
+            Tarea.setText("");
+            Descripcion.setText("");        
+        } else{} 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -287,17 +224,12 @@ public class agregarTarea extends javax.swing.JFrame {
     private javax.swing.JTextArea Descripcion;
     private javax.swing.ButtonGroup Grupo1;
     private javax.swing.JTextField Tarea;
-    private javax.swing.JRadioButton eleccionRoja;
-    private javax.swing.JRadioButton eleccionVerde;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel labelRojo;
-    private javax.swing.JLabel labelVerde;
     // End of variables declaration//GEN-END:variables
 }

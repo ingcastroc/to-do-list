@@ -6,7 +6,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -20,14 +22,16 @@ import javax.swing.event.ListSelectionListener;
  * @author sonia
  */
 public class toDoList extends javax.swing.JFrame {
-    
+    public static MinHeap arbol = new MinHeap(100);
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(toDoList.class.getName());
 
     private DefaultListModel<String> modeloLista;
     public listaEnlazada lista;
+   private boolean mostrandoDesdeHeap = false;
     private static boolean fechaYaIdentificada = false;
     public toDoList() {
         initComponents();
+        PersistenciaHeap.reconstruirHeapDesdeArchivos(arbol);
         desTarea.setLineWrap(true);         
         desTarea.setWrapStyleWord(true);
         this.setLocation(200, 100);
@@ -62,15 +66,26 @@ public class toDoList extends javax.swing.JFrame {
         actualizarList();
         LocalDate hoy = LocalDate.now();
         Lista.addListSelectionListener(evt -> {
-        if (!evt.getValueIsAdjusting()) {
-            String seleccionado = Lista.getSelectedValue();
-            String descriptor = lista.obtenerDescripcionPorTitulo(seleccionado);
+    if (!evt.getValueIsAdjusting()) {
+        String seleccionado = Lista.getSelectedValue();
 
-           
-            desTarea.setText(descriptor); 
-            
+        if (mostrandoDesdeHeap) {
+            Date fechaSeleccionada = jDateChooser1.getDate();
+            LocalDate fechaBusqueda = fechaSeleccionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+             ArrayList<TareaConFecha> tareasEncontradas = arbol.buscarPorFecha(fechaBusqueda);
+            for (TareaConFecha tarea : tareasEncontradas) {
+                if (tarea.titulo.equals(seleccionado)) {
+                    desTarea.setText(tarea.descripcion);
+                    break;
+                }
+            }
+        } else {
+            // Buscar en la lista enlazada
+            String descriptor = lista.obtenerDescripcionPorTitulo(seleccionado);
+            desTarea.setText(descriptor);
         }
-        });
+    }
+});
         
         jCheckBox1.addActionListener(new ActionListener() {
     @Override
@@ -95,7 +110,7 @@ public class toDoList extends javax.swing.JFrame {
             modeloLista.addElement(tarea);
                 
             }
-            
+            Lista.setModel(modeloLista);
     }
     public String identificarFecha(){
         LocalDate hoy = LocalDate.now();
@@ -144,10 +159,10 @@ public class toDoList extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         desTarea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -185,6 +200,11 @@ public class toDoList extends javax.swing.JFrame {
         });
 
         jButton3.setText("Consultar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,10 +232,12 @@ public class toDoList extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,9 +248,9 @@ public class toDoList extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
@@ -262,9 +284,25 @@ public class toDoList extends javax.swing.JFrame {
         EliminarTodo(identificarFecha());
         for (String tareas : lista.obtenerTareasComoTexto()) {
             String descripcion=lista.obtenerDescripcionPorTitulo(tareas);
-            persistenciaDatos.crearArchivoTarea(tareas,descripcion,0);
+            persistenciaDatos.crearArchivoTarea(tareas,descripcion);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Date fechaSeleccionada = jDateChooser1.getDate(); 
+        LocalDate fechaBusqueda = fechaSeleccionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate hoy = LocalDate.now();
+        if(fechaBusqueda.isEqual(hoy)){
+            actualizarList();
+        }else{
+        ArrayList<TareaConFecha> tareasEncontradas = arbol.buscarPorFecha(fechaBusqueda);
+        DefaultListModel<String> modelo = new DefaultListModel<>();
+        for (TareaConFecha tarea : tareasEncontradas) {
+             modelo.addElement(tarea.titulo);
+        }
+        Lista.setModel(modelo);
+        }    
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments

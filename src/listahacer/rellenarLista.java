@@ -11,20 +11,19 @@ public class rellenarLista {
 
         try (BufferedReader br = new BufferedReader(new FileReader(fechaArchivo))) {
             String linea;
-            String titulo = "", descripcion = "", prioridad = "";
+            String titulo = "", descripcion = "";
 
             while ((linea = br.readLine()) != null) {
                 if (linea.startsWith("Título:")) {
                     titulo = linea.substring(7).trim();
                 } else if (linea.startsWith("Descripción:")) {
                     descripcion = linea.substring(12).trim();
-                } else if (linea.startsWith("Prioridad:")) {
-                    prioridad = linea.substring(10).trim();
-                } else if (linea.startsWith("---")) {
-                    lista.agregarTarea(titulo, descripcion, 0);
+                } 
+                 else if (linea.startsWith("---")) {
+                    lista.agregarTarea(titulo, descripcion);
                     titulo = "";
                     descripcion = "";
-                    prioridad = "";
+                    
                 }
             }
         } catch (IOException e) {
