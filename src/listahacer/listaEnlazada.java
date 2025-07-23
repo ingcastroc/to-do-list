@@ -94,4 +94,4 @@ public class listaEnlazada {
         return lista;
     }
 
-    public int contarTareas() {
+}

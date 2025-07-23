@@ -5,6 +5,8 @@
 package listahacer;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -168,27 +170,39 @@ public class agregarTarea extends javax.swing.JFrame {
     }//GEN-LAST:event_TareaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PersistenciaHeap obj = new PersistenciaHeap();
-        Date fechaSeleccionada = jDateChooser1.getDate();
-        LocalDate hoy = LocalDate.now();
+        try {
+    PersistenciaHeap obj = new PersistenciaHeap();
+    Date fechaSeleccionada = jDateChooser1.getDate();
+    LocalDate hoy = LocalDate.now();
+
+    if (fechaSeleccionada == null) {
+        // Caso de fecha vacía, se asume que es hoy
+        ventanaPrincipal.lista.agregarTarea(Tarea.getText(), Descripcion.getText());
+        ventanaPrincipal.actualizarList();
+        persistenciaDatos.crearArchivoTarea(Tarea.getText(), Descripcion.getText());
+    } else {
         LocalDate seleccion = fechaSeleccionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        if (fechaSeleccionada == null || seleccion.isEqual(hoy)) {
-            // Se asume que es hoy
+
+        if (seleccion.isEqual(hoy)) {
             ventanaPrincipal.lista.agregarTarea(Tarea.getText(), Descripcion.getText());
             ventanaPrincipal.actualizarList();
             persistenciaDatos.crearArchivoTarea(Tarea.getText(), Descripcion.getText());
-            Tarea.setText("");
-            Descripcion.setText("");
-
-        } else if(seleccion.isAfter(hoy)) {
-            TareaConFecha tarea = new TareaConFecha(Tarea.getText(),Descripcion.getText(),seleccion);
-            
+        } else if (seleccion.isAfter(hoy)) {
+            TareaConFecha tarea = new TareaConFecha(Tarea.getText(), Descripcion.getText(), seleccion);
             ventanaPrincipal.arbol.insertar(tarea);
             PersistenciaHeap.guardarTareaIndividual(tarea);
             ventanaPrincipal.arbol.imprimirHeap();
-            Tarea.setText("");
-            Descripcion.setText("");        
-        } else{} 
+        }
+    }
+    Tarea.setText("");
+    Descripcion.setText("");
+} catch (NullPointerException e) {
+    e.printStackTrace();
+} catch (DateTimeException e) {
+    e.printStackTrace();
+} catch (Exception e) {
+    e.printStackTrace();
+}  
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

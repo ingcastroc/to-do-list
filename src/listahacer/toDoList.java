@@ -62,7 +62,7 @@ public class toDoList extends javax.swing.JFrame {
         modeloLista = new DefaultListModel<String>();
         Lista.setModel(modeloLista);
         
-     
+        ActualizarArchivosData();
         actualizarList();
         LocalDate hoy = LocalDate.now();
         Lista.addListSelectionListener(evt -> {
@@ -116,7 +116,7 @@ public class toDoList extends javax.swing.JFrame {
         LocalDate hoy = LocalDate.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MMMM-yyyy", new Locale("es", "ES"));
         String fechaconformato = hoy.format(formato)+".txt";
-        System.out.println(fechaconformato); 
+        
         File archivo = new File(fechaconformato);
         if(archivo.exists()){
             
@@ -140,7 +140,38 @@ public class toDoList extends javax.swing.JFrame {
         }
         
     }
- 
+    public void ActualizarArchivosData(){
+        File directorio = new File(".");
+        File[] archivos = directorio.listFiles((dir, name) -> name.endsWith(".txt"));
+
+        if (archivos == null) return;
+
+        LocalDate hoy = LocalDate.now();
+        DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd-MMMM-yyyy", new Locale("es"));
+
+        for (File archivo : archivos) {
+            String nombre = archivo.getName().replace(".txt", "");
+
+            // Puede tener sufijo _heap
+            if (nombre.endsWith("_heap")) {
+                nombre = nombre.replace("_heap", "");
+            }
+
+            try {
+                LocalDate fechaArchivo = LocalDate.parse(nombre, formatoFecha);
+                if (fechaArchivo.isBefore(hoy)) {
+                    if (archivo.delete()) {
+                        System.out.println("🗑️ Archivo eliminado: " + archivo.getName());
+                    } else {
+                        System.err.println("⚠️ No se pudo eliminar: " + archivo.getName());
+                    }
+                }
+            } catch (Exception e) {
+                
+            }
+        }
+    
+    }
         
     /**
      * This method is called from within the constructor to initialize the form.

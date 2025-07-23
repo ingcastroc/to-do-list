@@ -1,4 +1,0 @@
-Título: min heap
-Descripción: terminar de implementar
-
-------------------------------------------
